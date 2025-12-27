@@ -1,0 +1,558 @@
+# WIND TURBINE PERFORMANCE DATASET METADATA
+
+# Save as: metadata.yaml (include with dataset in repository)
+
+# ----- DUBLIN CORE CORE ELEMENTS -----
+
+title: "Power Coefficient Measurements for 500W Helical VAWT under Tropical Coastal Conditions"
+
+creator:
+
+  - name: "Perera, ABC"
+
+    affiliation: "Department of Mechanical Engineering, University of Moratuwa, Sri Lanka"
+
+    orcid: "0000-0002-1234-5678"  # Optional but recommended
+
+    email: "ABC.perera@example.com"
+
+  - name: "X"
+
+    affiliation: "Department of Mechanical Engineering, University of Moratuwa, Sri Lanka"
+
+    orcid: "0000-0001-9876-5432"
+
+    email: "x@uom.lk"
+
+    role: "Supervisor"
+
+subject:
+
+  - "Wind Turbine"
+
+  - "Vertical Axis Wind Turbine"
+
+  - "VAWT"
+
+  - "Power Coefficient"
+
+  - "Tip Speed Ratio"
+
+  - "Renewable Energy"
+
+  - "Tropical Climate"
+
+  - "Coastal Environment"
+
+  - "Sri Lanka"
+
+  - "Performance Characterization"
+
+description: |
+
+  This dataset contains six months of continuous measurements (June-December 2025) 
+
+  from a 500W helical vertical-axis wind turbine deployed at the University of 
+
+  Moratuwa coastal test site in Sri Lanka. Data was collected at 1 Hz sampling 
+
+  frequency using a custom ESP32-based data acquisition system. 
+
+  
+
+  Measured parameters include:
+
+  - Wind speed at hub height (3.5 m above ground)
+
+  - Rotor rotational speed (RPM)
+
+  - Electrical power output (DC)
+
+  - Ambient temperature, barometric pressure, and relative humidity
+
+  - Calculated air density, tip speed ratio (λ), and power coefficient (Cp)
+
+  
+
+  The primary objective is to characterize turbine aerodynamic performance 
+
+  (Cp-λ curve) under tropical coastal conditions with high humidity (75-95% RH) 
+
+  and salt spray exposure. Data quality: 92.3% completeness; measurement 
+
+  uncertainties documented in accompanying technical report.
+
+  
+
+  This dataset supports reproducible research and provides empirical validation 
+
+  for small-scale wind turbine performance models in developing-region contexts.
+
+publisher: "Zenodo"  # Or institutional repository name
+
+contributor:
+
+  - name: "Silva, A"
+
+    affiliation: "University Technical Officer, Mechanical Engineering Workshop"
+
+    role: "Technical support for system installation"
+
+date_created: "2025-06-01"
+
+date_published: "2025-12-24"
+
+date_coverage_start: "2025-06-01T00:00:00+0530"
+
+date_coverage_end: "2025-12-01T23:59:59+0530"
+
+type: "Dataset"
+
+format:
+
+  - "CSV (Comma-Separated Values)"
+
+  - "JSON (metadata)"
+
+  - "PDF (technical documentation)"
+
+identifier:
+
+  doi: "10.5281/zenodo.1234567"  # Assigned by repository upon publication
+
+language: "en"  # ISO 639-1 code
+
+rights: "Creative Commons Attribution 4.0 International (CC BY 4.0)"
+
+rights_uri: "https://creativecommons.org/licenses/by/4.0/"
+
+
+# ----- EXTENDED METADATA (Recommended) -----
+
+# Geospatial coverage
+
+spatial:
+
+  location_name: "University of Moratuwa, Coastal Test Site"
+
+  latitude: 6.7950
+
+  longitude: 79.9034
+
+  elevation_m: 5
+
+  coordinate_system: "WGS84"
+
+  distance_to_coast_m: 1200
+
+  terrain_description: "Coastal grassland, minimal obstacles within 500m radius"
+
+# Temporal coverage details
+
+temporal:
+
+  campaign_duration_days: 183
+
+  total_records: 15840000  # 1 Hz * 183 days * 86400 sec/day
+
+  valid_records: 14610720  # After quality filtering
+
+  data_completeness_percent: 92.3
+
+  gaps_description: "Data gaps due to: scheduled maintenance (3 days), power outage (1.2 days), SD card replacement (0.5 days)"
+
+# Measurement system specifications
+
+instrumentation:
+
+  data_acquisition_system:
+
+    platform: "ESP32-WROOM-32 microcontroller"
+
+    sampling_frequency_hz: 1.0
+
+    firmware_version: "v2.3.1"
+
+    firmware_repository: "https://github.com/username/turbine-daq"
+
+    
+
+  sensors:
+
+    wind_speed:
+
+      model: "Inspeed Vortex Wind Sensor"
+
+      type: "Cup anemometer"
+
+      measurement_range: "0.5-25 m/s"
+
+      accuracy: "±5% of reading"
+
+      calibration_date: "2025-05-15"
+
+      calibration_certificate: "included in supplementary files"
+
+      installation_height_m: 3.5
+
+      mounting_offset_from_turbine_m: 2.8
+
+      direction_relative_to_turbine: "Southwest (upwind)"
+
+      
+
+    rotor_speed:
+
+      model: "Honeywell SS441A Hall Effect Sensor"
+
+      type: "Magnetic pulse sensor"
+
+      pulses_per_revolution: 1
+
+      accuracy: "±0.5 RPM"
+
+      mounting_location: "Generator shaft"
+
+      
+
+    electrical_power:
+
+      model: "Texas Instruments INA226"
+
+      type: "I2C current/voltage monitor"
+
+      voltage_range: "0-36 VDC"
+
+      current_range: "±16 A"
+
+      accuracy_power: "±3%"
+
+      measurement_location: "Turbine output (pre-rectifier)"
+
+      
+
+    environmental:
+
+      model: "Bosch BME280"
+
+      type: "Digital environmental sensor (I2C)"
+
+      temperature_range: "-40 to +85°C"
+
+      temperature_accuracy: "±1°C"
+
+      pressure_range: "300-1100 hPa"
+
+      pressure_accuracy: "±1 hPa"
+
+      humidity_range: "0-100% RH"
+
+      humidity_accuracy: "±3% RH"
+
+      radiation_shield: "Custom white PVC multi-plate Stevenson screen"
+
+# Turbine specifications
+
+turbine:
+
+  design_type: "Helical Vertical Axis Wind Turbine (Gorlov-type)"
+
+  rated_power_w: 500
+
+  rotor_diameter_m: 1.0
+
+  rotor_height_m: 1.2
+
+  swept_area_m2: 2.4
+
+  number_of_blades: 3
+
+  blade_material: "NACA 0018 airfoil, glass-fiber reinforced polymer (GFRP)"
+
+  blade_pitch_deg: 60  # Helical twist
+
+  cut_in_wind_speed_ms: 2.5
+
+  rated_wind_speed_ms: 10.0
+
+  generator_type: "Permanent Magnet Synchronous Generator (PMSG)"
+
+  electrical_configuration: "3-phase rectified to DC, resistive load bank"
+
+# Data processing and quality control
+
+data_quality:
+
+  preprocessing:
+
+    - "ADC calibration using two-point reference voltages (0V, 3.3V)"
+
+    - "Air density correction applied using ideal gas law"
+
+    - "Power coefficient calculated per IEC 61400-12-2 methodology"
+
+    - "Outlier detection: Tukey fences method (3×IQR threshold)"
+
+    - "NaN values assigned to physically impossible readings"
+
+    
+
+  quality_flags:
+
+    - "0 = Valid data"
+
+    - "1 = Sensor out of range"
+
+    - "2 = Data gap (system offline)"
+
+    - "3 = Calibration drift suspected"
+
+    
+
+  known_issues:
+
+    - "Anemometer bearing friction increased after 4 months exposure; recalibrated 2025-10-15"
+
+    - "SD card replaced 2025-08-20 due to wear; no data lost"
+
+    - "Wi-Fi connectivity intermittent during heavy rain (local storage unaffected)"
+
+    
+
+  uncertainty_analysis:
+
+    wind_speed_uncertainty: "±5%"
+
+    rotor_speed_uncertainty: "±0.5 RPM"
+
+    power_uncertainty: "±3%"
+
+    cp_combined_uncertainty: "±8% (quadrature sum of component uncertainties)"
+
+    lambda_combined_uncertainty: "±6%"
+
+# Data structure and access
+
+data_structure:
+
+  file_organization:
+
+    - "Daily CSV files: YYYY-MM-DD_data.csv (183 files)"
+
+    - "Aggregated dataset: full_dataset.csv (15.6M records, 780 MB uncompressed)"
+
+    - "Processed Cp-lambda curve: cp_lambda_binned.csv (42 bins, summary statistics)"
+
+    - "Metadata: metadata.yaml (this file)"
+
+    - "Technical documentation: technical_report.pdf"
+
+    - "Calibration certificates: /calibration/ folder (PDFs)"
+
+    - "Data processing scripts: /scripts/ folder (Python 3.9)"
+
+    
+
+  column_definitions:
+
+    - name: "timestamp"
+
+      description: "Measurement timestamp (ISO 8601 format)"
+
+      units: "UTC+0530"
+
+      example: "2025-06-15T14:32:18+0530"
+
+      
+
+    - name: "wind_speed_ms"
+
+      description: "Wind speed at hub height"
+
+      units: "m/s (meters per second)"
+
+      missing_data_code: "NaN"
+
+      valid_range: "0.5-25.0"
+
+      
+
+    - name: "rotor_rpm"
+
+      description: "Rotor rotational speed"
+
+      units: "RPM (revolutions per minute)"
+
+      missing_data_code: "NaN"
+
+      valid_range: "0-500"
+
+      
+
+    - name: "power_w"
+
+      description: "Electrical power output (DC)"
+
+      units: "W (watts)"
+
+      missing_data_code: "NaN"
+
+      valid_range: "0-600"
+
+      
+
+    - name: "temp_c"
+
+      description: "Ambient air temperature"
+
+      units: "°C (degrees Celsius)"
+
+      missing_data_code: "NaN"
+
+      valid_range: "15-45"
+
+      
+
+    - name: "pressure_hpa"
+
+      description: "Barometric pressure"
+
+      units: "hPa (hectopascals)"
+
+      missing_data_code: "NaN"
+
+      valid_range: "990-1020"
+
+      
+
+    - name: "humidity_pct"
+
+      description: "Relative humidity"
+
+      units: "% (percent)"
+
+      missing_data_code: "NaN"
+
+      valid_range: "40-100"
+
+      
+
+    - name: "air_density_kgm3"
+
+      description: "Calculated air density (from temp, pressure, humidity)"
+
+      units: "kg/m³"
+
+      calculation: "ρ = P / (R_specific × T)"
+
+      missing_data_code: "NaN"
+
+      valid_range: "1.10-1.25"
+
+      
+
+    - name: "lambda"
+
+      description: "Tip speed ratio"
+
+      units: "dimensionless"
+
+      calculation: "λ = (ω × R) / v_wind"
+
+      missing_data_code: "NaN"
+
+      valid_range: "0-5"
+
+      
+
+    - name: "cp"
+
+      description: "Power coefficient"
+
+      units: "dimensionless"
+
+      calculation: "Cp = P_turbine / (0.5 × ρ × A × v³)"
+
+      missing_data_code: "NaN"
+
+      valid_range: "0-0.6"
+
+# Provenance and methodology
+
+methodology:
+
+  experimental_design: "Continuous field measurement campaign under natural wind conditions"
+
+  measurement_standards:
+
+    - "IEC 61400-12-2:2013 - Power performance of small wind turbines"
+
+    - "IEC 61400-1:2019 - Design requirements for wind turbines"
+
+  site_selection_criteria: "Open terrain, consistent wind exposure, minimal turbulence from structures"
+
+  data_collection_procedure: "Automated unattended operation; weekly site visits for visual inspection"
+
+  validation_methods:
+
+    - "Cross-comparison with nearby meteorological station (5 km distance)"
+
+    - "Quarterly sensor calibration checks"
+
+    - "Power curve validation against manufacturer specifications"
+
+# Related resources
+
+related_publications:
+
+  - citation: "Perera, A.B.C., and X. (2026). Performance Characterization of a Helical VAWT in Tropical Coastal Conditions. Wind Engineering, 50(2), 234-248."
+
+    doi: "10.1177/0309524X26000000"
+
+    relationship: "IsSupplementTo"
+
+    
+
+funding:
+
+  - agency: "Sri Lanka National Science Foundation"
+
+    grant_number: "NSF/RG/2024/ME/12"
+
+    
+
+  - agency: "University of Moratuwa Research Grant"
+
+    grant_number: "SRC/LT/2024/15"
+
+# Technical contact
+
+contact:
+
+  name: "Kasun Madushan Perera"
+
+  email: "kasun.perera@example.com"
+
+  institution: "University of Moratuwa"
+
+  department: "Department of Mechanical Engineering"
+
+  address: "Moratuwa 10400, Sri Lanka"
+
+# Version control
+
+version: "1.0"
+
+version_notes: "Initial public release"
+
+last_modified: "2025-12-24"
+
+# File integrity
+
+checksum:
+
+  algorithm: "SHA-256"
+
+  full_dataset_csv: "a3f5b8c9d2e1f4a7b6c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0"
+
+  # Generate with: sha256sum full_dataset.csv

@@ -1,0 +1,28 @@
+# Operating system files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE files
+.vscode/
+.idea/
+*.sublime-*
+
+# Compiled files
+*.pyc
+__pycache__/
+*.class
+
+# Large data files (don't upload to GitHub)
+*.csv
+!analysis/example_data/*.csv
+*.xlsx
+!hardware/bom/*.xlsx
+
+# Temporary files
+*.tmp
+*.bak
+*~
+
+# Setup files
+Setup.bat
