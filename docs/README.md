@@ -28,6 +28,50 @@ Sensor calibration procedures (critical for research-grade data).
 
 **Recommended frequency:** Every 3 months for long-term campaigns.
 
+---
+
+#### **🎓 Advanced Calibration Resources**
+
+**The guides above** provide practical, same-day calibration for most users. **For publication-quality research** requiring formal uncertainty quantification:
+
+| Resource Type | Location | Use For |
+|---------------|----------|---------|
+| **GUM uncertainty methodology** | [`../hardware/calibration/procedures/02-uncertainty-analysis-gum.md`](../hardware/calibration/procedures/02-uncertainty-analysis-gum.md) | Master's/doctoral thesis, peer-reviewed papers |
+| **Python automation tools** | [`../hardware/calibration/tools/`](../hardware/calibration/tools/) | Automated uncertainty calculation, curve fitting, drift analysis |
+| **Extended protocols** | [`../hardware/calibration/procedures/`](../hardware/calibration/procedures/) | Multi-point calibration (10+ points), 48-hour field validation |
+| **Complete templates** | [`../hardware/calibration/templates/`](../hardware/calibration/templates/) | Formal calibration certificates, config files |
+
+**📖 Navigation guide:** [`../hardware/calibration/README.md`](../hardware/calibration/README.md)
+
+**Choose your calibration level:**
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│ Undergraduate / Quick Setup                                     │
+│ → Use calibration/ guides above                                 │
+│ → Accuracy: ±5%                                                 │
+│ → Time: 1-2 days                                                │
+└─────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────┐
+│ Master's Thesis / Publication                                   │
+│ → Calibrate with calibration/ guides                            │
+│ → Add GUM uncertainty from hardware/calibration/tools/          │
+│ → Accuracy: ±2-3%                                               │
+│ → Time: 3-5 days                                                │
+└─────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────┐
+│ Doctoral Research / High-Impact Journal                         │
+│ → Use hardware/calibration/ advanced procedures                 │
+│ → Multi-point calibration + extended field validation           │
+│ → Formal uncertainty certificates                               │
+│ → Accuracy: ±1-2%                                               │
+│ → Time: 5-7 days                                                │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+
 ### **`troubleshooting/`**
 Problem-solving guides for common issues.
 
@@ -67,7 +111,8 @@ Work through [`../firmware/examples/`](../firmware/examples/) (01-08)
 Build circuit per [`../hardware/schematics/`](../hardware/schematics/)
 
 **Week 5: Calibration**  
-Calibrate sensors per [`calibration/`](calibration/) procedures
+**Quick calibration:** [`calibration/`](calibration/) procedures (1-2 days)
+**Research-grade** (optional): [`../hardware/calibration/`](../hardware/calibration/) for formal uncertainty analysis
 
 **Week 6: Deployment**  
 Install on turbine, start data collection
@@ -132,6 +177,12 @@ Wi-Fi won't connect?
 - Multi-point anemometer curve (5-10 wind speeds)
 - Environmental sensors against reference standards
 - Document in `calibration_datasheet_template.xlsx`
+
+**Research-grade calibration (thesis/publication):**
+- Formal GUM uncertainty analysis: [`../hardware/calibration/tools/uncertainty-calculator.py`](../hardware/calibration/tools/uncertainty-calculator.py)
+- Extended field protocols (24-48h data collection)
+- Automated data processing and curve fitting
+- See [`../hardware/calibration/README.md`](../hardware/calibration/README.md) for complete methodology
 
 ---
 
