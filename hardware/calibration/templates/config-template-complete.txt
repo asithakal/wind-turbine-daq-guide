@@ -1,0 +1,896 @@
+# ============================================================
+# WIND TURBINE DAQ SYSTEM - COMPLETE CONFIGURATION FILE
+# ============================================================
+# This is the MASTER template with all possible parameters.
+# Copy to your SD card as "config.txt" and customize.
+# Lines starting with # are comments (ignored by firmware)
+# ============================================================
+# Version: 1.0
+# Last Updated: 2026-01-03
+# Repository: github.com/asithakal/wind-turbine-daq-guide
+# ============================================================
+
+# ─────────────────────────────────────────────────────────
+# SECTION 1: ANEMOMETER CALIBRATION
+# ─────────────────────────────────────────────────────────
+# Calibration equation: v_wind = (V_measured - OFFSET) / SCALE
+# Obtain these values from calibration procedure (Appendix C)
+
+ANEMOMETER_OFFSET=0.4225          # Volts (zero-wind voltage)
+ANEMOMETER_SCALE=0.1975           # V/(m/s) (sensitivity/slope)
+ANEMOMETER_CAL_DATE=2025-05-15    # Date calibrated (YYYY-MM-DD)
+ANEMOMETER_CAL_VALID_UNTIL=2025-08-15  # Next calibration due
+ANEMOMETER_MODEL=Inspeed Vortex   # Sensor model/manufacturer
+ANEMOMETER_SERIAL=12345           # Serial number
+ANEMOMETER_PIN=34                 # ESP32 GPIO analog input pin
+ANEMOMETER_VOLTAGE_MAX=5.0        # Max sensor output voltage
+ANEMOMETER_WIND_MAX=25.0          # Max measurable wind speed (m/s)
+
+# Advanced: Non-linear correction (leave blank if linear)
+ANEMOMETER_POLY_COEFF_A=0.0       # Quadratic term coefficient
+ANEMOMETER_POLY_COEFF_B=0.0       # Cubic term coefficient
+
+# ─────────────────────────────────────────────────────────
+# SECTION 2: ROTOR SPEED SENSOR
+# ─────────────────────────────────────────────────────────
+# Hall effect or optical encoder for RPM measurement
+
+ROTOR_SENSOR_TYPE=HALL            # HALL / OPTICAL / ENCODER
+ROTOR_SENSOR_PIN=15               # ESP32 GPIO digital input pin
+ROTOR_PULSES_PER_REV=1            # Pulses per revolution (1 for single magnet)
+ROTOR_DEBOUNCE_MS=50              # Debounce time (milliseconds)
+ROTOR_RPM_MAX=500                 # Maximum expected RPM
+ROTOR_TIMEOUT_MS=5000             # Zero RPM if no pulse in this time
+
+# For encoders with quadrature output
+ROTOR_QUADRATURE_ENABLE=0         # 1=enabled, 0=disabled
+ROTOR_ENCODER_PIN_B=16            # Second channel for quadrature (if enabled)
+
+# ─────────────────────────────────────────────────────────
+# SECTION 3: POWER MEASUREMENT (INA226 or similar)
+# ─────────────────────────────────────────────────────────
+# For DC systems (AC systems require different approach)
+
+POWER_SENSOR_TYPE=INA226          # INA226 / INA219 / ACS712 / CUSTOM
+POWER_I2C_ADDRESS=0x40            # I2C address (default 0x40 for INA226)
+POWER_SHUNT_RESISTANCE=0.002      # Ohms (typically 2 mΩ for INA226 modules)
+POWER_MAX_CURRENT=20.0            # Amperes (max expected current)
+POWER_MAX_VOLTAGE=50.0            # Volts (max expected voltage)
+
+# Calibration correction factors (from bench test validation)
+POWER_CURRENT_MULTIPLIER=1.00     # Multiply current reading by this
+POWER_VOLTAGE_MULTIPLIER=1.00     # Multiply voltage reading by this
+POWER_POWER_MULTIPLIER=1.00       # Multiply power reading by this
+POWER_CAL_DATE=2025-05-10         # Date calibrated/validated
+
+# INA226 specific settings
+INA226_AVERAGING=16               # Number of samples to average (1/4/16/64/128/256/512/1024)
+INA226_BUS_CONV_TIME=1100         # Bus voltage conversion time (140/204/332/588/1100/2116/4156/8244 μs)
+INA226_SHUNT_CONV_TIME=1100       # Shunt voltage conversion time (same options as bus)
+INA226_MODE=7                     # Operating mode: 7=continuous shunt+bus
+
+# ─────────────────────────────────────────────────────────
+# SECTION 4: ENVIRONMENTAL SENSORS (BME280)
+# ─────────────────────────────────────────────────────────
+# Temperature, pressure, humidity for air density calculation
+
+BME280_ENABLE=1                   # 1=enabled, 0=disabled
+BME280_I2C_ADDRESS=0x76           # I2C address (0x76 or 0x77)
+
+# Correction offsets (apply if systematic error detected)
+BME280_TEMP_OFFSET=0.0            # °C (add to temperature reading)
+BME280_PRESSURE_OFFSET=0.0        # hPa (add to pressure reading)
+BME280_HUMIDITY_OFFSET=0.0        # %RH (add to humidity reading)
+
+# Valid measurement ranges (flag as error if outside)
+BME280_TEMP_MIN=-5.0              # °C
+BME280_TEMP_MAX=60.0              # °C
+BME280_PRESSURE_MIN=950.0         # hPa
+BME280_PRESSURE_MAX=1050.0        # hPa
+BME280_HUMIDITY_MIN=0.0           # %RH
+BME280_HUMIDITY_MAX=100.0         # %RH
+
+# Oversampling settings (higher = more accurate but slower)
+BME280_TEMP_OVERSAMPLING=2        # 0=skip, 1-5=x1/x2/x4/x8/x16
+BME280_PRESSURE_OVERSAMPLING=5    # 0=skip, 1-5=x1/x2/x4/x8/x16
+BME280_HUMIDITY_OVERSAMPLING=1    # 0=skip, 1-5=x1/x2/x4/x8/x16
+BME280_FILTER_COEFFICIENT=4       # 0=off, 1-4=coeff 2/4/8/16
+
+# ─────────────────────────────────────────────────────────
+# SECTION 5: TURBINE SPECIFICATIONS
+# ─────────────────────────────────────────────────────────
+# Physical parameters for Cp and λ calculations
+
+TURBINE_TYPE=VAWT                 # VAWT / HAWT
+ROTOR_RADIUS=0.60                 # meters (center to blade tip)
+ROTOR_HEIGHT=1.50                 # meters (for VAWT, blade height)
+BLADE_COUNT=3                     # Number of blades
+SWEPT_AREA=1.80                   # m² (for VAWT: 2 * R * H; for HAWT: π * R²)
+
+# For HAWT, specify hub height
+HUB_HEIGHT=3.0                    # meters (for HAWT only)
+
+# Performance specifications
+TURBINE_RATED_POWER=500           # Watts (nominal rated power)
+TURBINE_CUT_IN_WIND=2.5           # m/s (minimum operational wind speed)
+TURBINE_RATED_WIND=10.0           # m/s (rated wind speed)
+TURBINE_CUT_OUT_WIND=20.0         # m/s (shut-down wind speed)
+TURBINE_MAX_RPM=500               # RPM (maximum safe operating speed)
+
+# Generator specifications
+GENERATOR_TYPE=PMG                # PMG (permanent magnet) / IG (induction) / OTHER
+GENERATOR_PHASES=3                # 1 or 3
+GENERATOR_POLES=12                # Number of poles
+
+# ─────────────────────────────────────────────────────────
+# SECTION 6: SITE INFORMATION
+# ─────────────────────────────────────────────────────────
+
+SITE_NAME=Moratuwa Coastal Test Site
+SITE_DESCRIPTION=University research facility, coastal environment
+SITE_LATITUDE=6.7906              # Decimal degrees (North positive)
+SITE_LONGITUDE=79.9000            # Decimal degrees (East positive)
+SITE_ELEVATION=5.0                # meters above sea level
+SITE_TIMEZONE_OFFSET=5.5          # Hours from UTC (Sri Lanka = UTC+5:30)
+
+# Environmental classification
+SITE_TERRAIN=COASTAL              # COASTAL / URBAN / RURAL / OPEN / FOREST
+SITE_ROUGHNESS_CLASS=2            # IEC roughness class (0-4)
+SITE_OBSTACLES_PRESENT=1          # 1=yes (buildings, trees), 0=no
+
+# ─────────────────────────────────────────────────────────
+# SECTION 7: DATA ACQUISITION PARAMETERS
+# ─────────────────────────────────────────────────────────
+
+SAMPLING_RATE_HZ=1.0              # Samples per second (1 Hz = once per second)
+DATA_BUFFER_SIZE=10               # Number of samples to buffer before SD write
+SD_WRITE_BATCH_SIZE=10            # Write to SD card every N samples
+
+# Sensor reading frequencies (can differ from main sampling rate)
+ANEMOMETER_READ_HZ=1.0            # Wind speed reading frequency
+ROTOR_READ_HZ=10.0                # RPM calculation update frequency (higher for accuracy)
+POWER_READ_HZ=1.0                 # Power reading frequency
+BME280_READ_HZ=0.1                # Environmental (once per 10 seconds)
+
+# ADC settings for analog sensors
+ADC_RESOLUTION=12                 # Bits (ESP32 default: 12-bit = 0-4095)
+ADC_ATTENUATION=11                # dB (0/2.5/6/11 → 0-1V/0-1.5V/0-2.2V/0-3.3V)
+ADC_SAMPLES_TO_AVERAGE=10         # Number of ADC readings to average per measurement
+
+# ─────────────────────────────────────────────────────────
+# SECTION 8: DATA STORAGE (SD CARD)
+# ─────────────────────────────────────────────────────────
+
+SD_CARD_ENABLE=1                  # 1=enabled, 0=disabled (dangerous!)
+SD_CARD_CS_PIN=5                  # ESP32 GPIO chip-select pin
+SD_CARD_MOSI_PIN=23               # MOSI pin
+SD_CARD_MISO_PIN=19               # MISO pin
+SD_CARD_SCK_PIN=18                # Clock pin
+SD_CARD_FORMAT=CSV                # CSV / JSON / BINARY
+
+# File naming and rotation
+SD_FILE_PREFIX=turbine_data       # Filename prefix
+SD_FILE_EXTENSION=.csv            # File extension
+SD_NEW_FILE_INTERVAL=DAILY        # HOURLY / DAILY / WEEKLY / SIZE
+SD_MAX_FILE_SIZE_MB=100           # Start new file if exceeded (if SIZE mode)
+
+# CSV column headers (customize as needed)
+SD_CSV_HEADER=timestamp,wind_speed_ms,rotor_rpm,voltage_V,current_A,power_W,temperature_C,pressure_hPa,humidity_pct,cp,lambda
+
+# Data integrity
+SD_ENABLE_CRC=0                   # 1=append CRC checksum to each line, 0=disabled
+SD_SYNC_INTERVAL_SEC=60           # Force SD card sync every N seconds (prevents data loss)
+
+# ─────────────────────────────────────────────────────────
+# SECTION 9: NETWORK CONFIGURATION
+# ─────────────────────────────────────────────────────────
+
+WIFI_ENABLE=1                     # 1=enabled, 0=disabled
+WIFI_SSID=YourNetworkName         # Wi-Fi network name
+WIFI_PASSWORD=YourPassword        # Wi-Fi password (WPA2)
+WIFI_TIMEOUT_SEC=30               # Connection timeout
+WIFI_RETRY_INTERVAL_SEC=300       # Retry every 5 minutes if fails
+WIFI_MAX_RETRIES=3                # Give up after N failed attempts (0=infinite)
+
+# Static IP (optional, leave blank for DHCP)
+WIFI_STATIC_IP=                   # e.g., 192.168.1.100 (blank = DHCP)
+WIFI_GATEWAY=                     # e.g., 192.168.1.1
+WIFI_SUBNET=255.255.255.0         # Subnet mask
+WIFI_DNS_PRIMARY=8.8.8.8          # DNS server (Google DNS)
+WIFI_DNS_SECONDARY=8.8.4.4        # Secondary DNS
+
+# Power saving
+WIFI_POWER_SAVE_MODE=0            # 1=enable modem sleep, 0=always on (better reliability)
+
+# ─────────────────────────────────────────────────────────
+# SECTION 10: MQTT CLOUD TRANSMISSION
+# ─────────────────────────────────────────────────────────
+
+MQTT_ENABLE=1                     # 1=enabled, 0=disabled
+MQTT_BROKER=broker.hivemq.com     # MQTT broker address (or IP)
+MQTT_PORT=1883                    # Port (1883 standard, 8883 for TLS)
+MQTT_USE_TLS=0                    # 1=use TLS encryption, 0=plain
+MQTT_USERNAME=                    # Leave blank if no authentication
+MQTT_PASSWORD=                    # Leave blank if no authentication
+
+MQTT_CLIENT_ID=ESP32-Turbine-UoM-Site01  # Unique client ID
+MQTT_TOPIC_BASE=turbine/uom/site01       # Base topic
+MQTT_TOPIC_DATA=turbine/uom/site01/data  # Topic to publish data
+MQTT_TOPIC_STATUS=turbine/uom/site01/status  # Topic for status messages
+MQTT_TOPIC_ERRORS=turbine/uom/site01/errors  # Topic for error messages
+
+MQTT_QOS=1                        # Quality of Service (0=at most once, 1=at least once, 2=exactly once)
+MQTT_RETAIN=0                     # 1=retain last message, 0=don't retain
+
+MQTT_PUBLISH_INTERVAL_SEC=60      # Transmit every N seconds
+MQTT_BATCH_SAMPLES=60             # Send summary of N samples (or individual samples if 1)
+
+# Message format
+MQTT_FORMAT=JSON                  # JSON / CSV
+MQTT_INCLUDE_TIMESTAMP=1          # 1=include timestamp in message, 0=exclude
+MQTT_INCLUDE_CALCULATED_VALUES=1  # 1=include Cp and lambda, 0=raw data only
+
+# Connection behavior
+MQTT_AUTO_RECONNECT=1             # 1=auto-reconnect if disconnected, 0=manual
+MQTT_KEEP_ALIVE_SEC=60            # Keep-alive interval
+MQTT_CLEAN_SESSION=1              # 1=clean session on connect, 0=persistent
+
+# ─────────────────────────────────────────────────────────
+# SECTION 11: NTP TIME SYNCHRONIZATION
+# ─────────────────────────────────────────────────────────
+
+NTP_ENABLE=1                      # 1=enabled, 0=disabled (use RTC only)
+NTP_SERVER_PRIMARY=pool.ntp.org   # NTP server address
+NTP_SERVER_SECONDARY=time.nist.gov # Backup NTP server
+NTP_SYNC_INTERVAL_SEC=3600        # Re-sync every hour
+NTP_TIMEZONE_OFFSET_SEC=19800     # Seconds from UTC (5.5 hours = 19800 sec)
+
+# Daylight saving time (DST)
+NTP_DST_ENABLE=0                  # 1=enabled, 0=disabled (Sri Lanka has no DST)
+NTP_DST_OFFSET_SEC=3600           # DST offset in seconds (typically 1 hour)
+
+# Time format
+NTP_TIME_FORMAT=ISO8601           # ISO8601 / UNIX / CUSTOM
+NTP_CUSTOM_FORMAT=%Y-%m-%d %H:%M:%S  # If CUSTOM (strftime format)
+
+# ─────────────────────────────────────────────────────────
+# SECTION 12: REAL-TIME CLOCK (DS3231 optional)
+# ─────────────────────────────────────────────────────────
+
+RTC_ENABLE=0                      # 1=enabled, 0=disabled
+RTC_I2C_ADDRESS=0x68              # I2C address for DS3231
+RTC_BATTERY_BACKUP=1              # 1=has battery, 0=no battery
+
+# RTC behavior
+RTC_SYNC_TO_NTP=1                 # 1=update RTC from NTP, 0=RTC is master
+RTC_UPDATE_INTERVAL_SEC=86400     # Update RTC from NTP daily
+
+# ─────────────────────────────────────────────────────────
+# SECTION 13: DATA QUALITY AND VALIDATION
+# ─────────────────────────────────────────────────────────
+
+# Flag data as invalid if outside these ranges
+WIND_SPEED_MIN=0.0                # m/s (physically impossible below this)
+WIND_SPEED_MAX=30.0               # m/s (sensor/turbine max)
+ROTOR_RPM_MIN=0.0                 # RPM
+ROTOR_RPM_MAX=500.0               # RPM (safety limit)
+POWER_MIN=-10.0                   # Watts (allow small negative for noise)
+POWER_MAX=1000.0                  # Watts (above rated power indicates error)
+TEMPERATURE_MIN=-10.0             # °C
+TEMPERATURE_MAX=60.0              # °C
+VOLTAGE_MIN=0.0                   # Volts
+VOLTAGE_MAX=60.0                  # Volts
+CURRENT_MIN=-1.0                  # Amperes (allow small negative)
+CURRENT_MAX=25.0                  # Amperes
+
+# Outlier detection (3-sigma rule)
+OUTLIER_DETECTION_ENABLE=1        # 1=enabled, 0=disabled
+OUTLIER_SIGMA_THRESHOLD=3.0       # Flag if > N standard deviations from mean
+OUTLIER_WINDOW_SIZE=20            # Number of samples for rolling statistics
+
+# Rate of change limits (detect sensor failures)
+WIND_SPEED_MAX_CHANGE_PER_SEC=2.0 # m/s (flag if exceeds)
+POWER_MAX_CHANGE_PER_SEC=100.0    # Watts
+
+# Data completeness
+MIN_DATA_COMPLETENESS_PCT=95.0    # Flag dataset if < this % valid samples
+
+# ─────────────────────────────────────────────────────────
+# SECTION 14: CALCULATED VALUES
+# ─────────────────────────────────────────────────────────
+
+# Air density calculation
+AIR_DENSITY_METHOD=CALCULATED     # CALCULATED / FIXED
+AIR_DENSITY_FIXED=1.225           # kg/m³ (if FIXED method)
+
+# For CALCULATED method, uses BME280 data:
+# ρ = P / (R_specific × T)
+# where R_specific = 287.05 J/(kg·K) for dry air
+AIR_GAS_CONSTANT=287.05           # J/(kg·K)
+AIR_HUMIDITY_CORRECTION=1         # 1=apply humidity correction, 0=ignore
+
+# Coefficient of performance (Cp) calculation
+CP_CALCULATION_ENABLE=1           # 1=enabled, 0=disabled
+CP_AVERAGING_WINDOW_SEC=10        # Average over N seconds
+
+# Tip speed ratio (λ) calculation
+LAMBDA_CALCULATION_ENABLE=1       # 1=enabled, 0=disabled
+
+# Power coefficient limits (for validation)
+CP_MAX=0.59                       # Betz limit (theoretical maximum)
+CP_EXPECTED_MAX=0.35              # Realistic maximum for your turbine
+LAMBDA_MIN=0.0                    # Minimum valid TSR
+LAMBDA_MAX=15.0                   # Maximum valid TSR
+
+# ─────────────────────────────────────────────────────────
+# SECTION 15: SYSTEM BEHAVIOR
+# ─────────────────────────────────────────────────────────
+
+# Watchdog timer
+WATCHDOG_ENABLE=1                 # 1=enabled (auto-reboot on hang), 0=disabled
+WATCHDOG_TIMEOUT_SEC=30           # Reboot if no activity for N seconds
+
+# LED status indicators
+LED_STATUS_ENABLE=1               # 1=use LED for status indication, 0=disabled
+LED_STATUS_PIN=2                  # ESP32 GPIO pin for status LED (built-in LED)
+LED_BLINK_PATTERN=NORMAL          # NORMAL / ERROR / WARNING / OFF
+
+# LED patterns (milliseconds on/off):
+LED_PATTERN_NORMAL_ON=100         # Blink: 100ms on
+LED_PATTERN_NORMAL_OFF=900        # Blink: 900ms off (slow blink = OK)
+LED_PATTERN_ERROR_ON=200          # Blink: 200ms on
+LED_PATTERN_ERROR_OFF=200         # Blink: 200ms off (fast blink = error)
+
+# Serial debug output
+SERIAL_DEBUG_ENABLE=1             # 1=print debug messages to serial, 0=quiet
+SERIAL_BAUD_RATE=115200           # Baud rate for serial communication
+SERIAL_LOG_LEVEL=INFO             # DEBUG / INFO / WARNING / ERROR
+
+# Low power mode (for battery operation)
+LOW_POWER_MODE_ENABLE=0           # 1=sleep between samples, 0=always on
+LOW_POWER_WAKE_INTERVAL_SEC=60    # Wake up every N seconds if low-power mode
+LOW_POWER_WIFI_DISABLE=0          # 1=disable WiFi in low power mode, 0=keep enabled
+
+# Boot behavior
+AUTO_START_LOGGING=1              # 1=start logging on boot, 0=wait for command
+CALIBRATION_CHECK_ON_BOOT=1       # 1=verify calibration dates, 0=skip
+SENSOR_TEST_ON_BOOT=1             # 1=test all sensors on boot, 0=skip
+
+# Error handling
+ERROR_LOGGING_ENABLE=1            # 1=log errors to separate file, 0=disabled
+ERROR_LOG_FILE=errors.log         # Error log filename
+MAX_CONSECUTIVE_ERRORS=10         # Reboot if exceeds (0=never reboot)
+
+# ─────────────────────────────────────────────────────────
+# SECTION 16: ADVANCED FEATURES
+# ─────────────────────────────────────────────────────────
+
+# Web interface (if implemented in firmware)
+WEB_SERVER_ENABLE=0               # 1=enabled, 0=disabled
+WEB_SERVER_PORT=80                # HTTP port
+WEB_AUTH_ENABLE=0                 # 1=require password, 0=open
+WEB_USERNAME=admin                # Username (if auth enabled)
+WEB_PASSWORD=changeme             # Password (if auth enabled)
+
+# OTA (Over-The-Air) firmware updates
+OTA_ENABLE=0                      # 1=enabled, 0=disabled
+OTA_PASSWORD=otapassword          # Password for OTA updates
+OTA_PORT=3232                     # OTA port
+
+# Data export
+AUTO_EXPORT_ENABLE=0              # 1=auto-upload data files, 0=manual
+EXPORT_PROTOCOL=FTP               # FTP / SFTP / HTTP
+EXPORT_SERVER=ftp.example.com     # Server address
+EXPORT_USERNAME=ftpuser           # Upload username
+EXPORT_PASSWORD=ftppass           # Upload password
+EXPORT_INTERVAL_HOURS=24          # Export every N hours
+
+# Alerts and notifications
+ALERT_ENABLE=0                    # 1=enabled, 0=disabled
+ALERT_EMAIL=admin@example.com     # Email for alerts
+ALERT_CONDITIONS=OVERSPEED,OVERPOWER  # Comma-separated list
+
+# Maintenance reminders
+MAINTENANCE_REMINDER_ENABLE=1     # 1=enabled, 0=disabled
+MAINTENANCE_INTERVAL_DAYS=90      # Remind every N days
+NEXT_MAINTENANCE_DATE=2025-08-15  # Next scheduled maintenance
+
+# ─────────────────────────────────────────────────────────
+# SECTION 17: FIRMWARE METADATA (do not modify)
+# ─────────────────────────────────────────────────────────
+
+FIRMWARE_VERSION=1.2.0
+FIRMWARE_BUILD_DATE=2025-05-01
+CONFIG_VERSION=1.0
+CONFIG_CREATED=2025-05-01
+CONFIG_LAST_MODIFIED=2025-05-15
+CONFIG_AUTHOR=Your Name
+
+# ─────────────────────────────────────────────────────────
+# SECTION 18: CUSTOM USER PARAMETERS
+# ─────────────────────────────────────────────────────────
+# Add your own custom parameters here
+
+# Example custom parameters:
+# CUSTOM_PARAM_1=value1
+# CUSTOM_PARAM_2=value2
+
+# ============================================================
+# END OF CONFIGURATION FILE
+# ============================================================
+# For detailed explanations of each parameter, see:
+# - Main guide Section 4.5 (calibration)
+# - Main guide Appendix C (sensor calibration)
+# - GitHub: hardware/calibration/README.md
+# ============================================================
+
+# USAGE INSTRUCTIONS:
+# 1. Copy this file to SD card root directory as "config.txt"
+# 2. Customize sections 1-6 with your calibration and site data
+# 3. Adjust section 7-9 for your data acquisition needs
+# 4. Leave sections 14-17 as default unless you need advanced features
+# 5. Test configuration by loading SD card and checking Serial Monitor
+# 6. If errors occur, check docs/troubleshooting/common_errors.md
+
+# PARAMETER PRIORITY:
+# - CRITICAL (must customize): Sections 1, 5, 6, 9
+# - IMPORTANT (should review): Sections 2, 3, 4, 7, 8
+# - OPTIONAL (defaults OK): Sections 10-18
+
+# VALIDATION CHECKLIST:
+# [ ] Calibration dates are current (Section 1, 3)
+# [ ] Site coordinates are correct (Section 6)
+# [ ] WiFi credentials are correct (Section 9)
+# [ ] Sensor pins match hardware wiring (Sections 1-4)
+# [ ] Turbine specifications match your system (Section 5)
+# [ ] File naming is appropriate (Section 8)
+
+# For support: https://github.com/asithakal/wind-turbine-daq-guide/issues
+# ============================================================
+# WIND TURBINE DAQ SYSTEM - COMPLETE CONFIGURATION FILE
+# ============================================================
+# This is the MASTER template with all possible parameters.
+# Copy to your SD card as "config.txt" and customize.
+# Lines starting with # are comments (ignored by firmware)
+# ============================================================
+# Version: 1.0
+# Last Updated: 2026-01-03
+# Repository: github.com/asithakal/wind-turbine-daq-guide
+# ============================================================
+
+# ─────────────────────────────────────────────────────────
+# SECTION 1: ANEMOMETER CALIBRATION
+# ─────────────────────────────────────────────────────────
+# Calibration equation: v_wind = (V_measured - OFFSET) / SCALE
+# Obtain these values from calibration procedure (Appendix C)
+
+ANEMOMETER_OFFSET=0.4225          # Volts (zero-wind voltage)
+ANEMOMETER_SCALE=0.1975           # V/(m/s) (sensitivity/slope)
+ANEMOMETER_CAL_DATE=2025-05-15    # Date calibrated (YYYY-MM-DD)
+ANEMOMETER_CAL_VALID_UNTIL=2025-08-15  # Next calibration due
+ANEMOMETER_MODEL=Inspeed Vortex   # Sensor model/manufacturer
+ANEMOMETER_SERIAL=12345           # Serial number
+ANEMOMETER_PIN=34                 # ESP32 GPIO analog input pin
+ANEMOMETER_VOLTAGE_MAX=5.0        # Max sensor output voltage
+ANEMOMETER_WIND_MAX=25.0          # Max measurable wind speed (m/s)
+
+# Advanced: Non-linear correction (leave blank if linear)
+ANEMOMETER_POLY_COEFF_A=0.0       # Quadratic term coefficient
+ANEMOMETER_POLY_COEFF_B=0.0       # Cubic term coefficient
+
+# ─────────────────────────────────────────────────────────
+# SECTION 2: ROTOR SPEED SENSOR
+# ─────────────────────────────────────────────────────────
+# Hall effect or optical encoder for RPM measurement
+
+ROTOR_SENSOR_TYPE=HALL            # HALL / OPTICAL / ENCODER
+ROTOR_SENSOR_PIN=15               # ESP32 GPIO digital input pin
+ROTOR_PULSES_PER_REV=1            # Pulses per revolution (1 for single magnet)
+ROTOR_DEBOUNCE_MS=50              # Debounce time (milliseconds)
+ROTOR_RPM_MAX=500                 # Maximum expected RPM
+ROTOR_TIMEOUT_MS=5000             # Zero RPM if no pulse in this time
+
+# For encoders with quadrature output
+ROTOR_QUADRATURE_ENABLE=0         # 1=enabled, 0=disabled
+ROTOR_ENCODER_PIN_B=16            # Second channel for quadrature (if enabled)
+
+# ─────────────────────────────────────────────────────────
+# SECTION 3: POWER MEASUREMENT (INA226 or similar)
+# ─────────────────────────────────────────────────────────
+# For DC systems (AC systems require different approach)
+
+POWER_SENSOR_TYPE=INA226          # INA226 / INA219 / ACS712 / CUSTOM
+POWER_I2C_ADDRESS=0x40            # I2C address (default 0x40 for INA226)
+POWER_SHUNT_RESISTANCE=0.002      # Ohms (typically 2 mΩ for INA226 modules)
+POWER_MAX_CURRENT=20.0            # Amperes (max expected current)
+POWER_MAX_VOLTAGE=50.0            # Volts (max expected voltage)
+
+# Calibration correction factors (from bench test validation)
+POWER_CURRENT_MULTIPLIER=1.00     # Multiply current reading by this
+POWER_VOLTAGE_MULTIPLIER=1.00     # Multiply voltage reading by this
+POWER_POWER_MULTIPLIER=1.00       # Multiply power reading by this
+POWER_CAL_DATE=2025-05-10         # Date calibrated/validated
+
+# INA226 specific settings
+INA226_AVERAGING=16               # Number of samples to average (1/4/16/64/128/256/512/1024)
+INA226_BUS_CONV_TIME=1100         # Bus voltage conversion time (140/204/332/588/1100/2116/4156/8244 μs)
+INA226_SHUNT_CONV_TIME=1100       # Shunt voltage conversion time (same options as bus)
+INA226_MODE=7                     # Operating mode: 7=continuous shunt+bus
+
+# ─────────────────────────────────────────────────────────
+# SECTION 4: ENVIRONMENTAL SENSORS (BME280)
+# ─────────────────────────────────────────────────────────
+# Temperature, pressure, humidity for air density calculation
+
+BME280_ENABLE=1                   # 1=enabled, 0=disabled
+BME280_I2C_ADDRESS=0x76           # I2C address (0x76 or 0x77)
+
+# Correction offsets (apply if systematic error detected)
+BME280_TEMP_OFFSET=0.0            # °C (add to temperature reading)
+BME280_PRESSURE_OFFSET=0.0        # hPa (add to pressure reading)
+BME280_HUMIDITY_OFFSET=0.0        # %RH (add to humidity reading)
+
+# Valid measurement ranges (flag as error if outside)
+BME280_TEMP_MIN=-5.0              # °C
+BME280_TEMP_MAX=60.0              # °C
+BME280_PRESSURE_MIN=950.0         # hPa
+BME280_PRESSURE_MAX=1050.0        # hPa
+BME280_HUMIDITY_MIN=0.0           # %RH
+BME280_HUMIDITY_MAX=100.0         # %RH
+
+# Oversampling settings (higher = more accurate but slower)
+BME280_TEMP_OVERSAMPLING=2        # 0=skip, 1-5=x1/x2/x4/x8/x16
+BME280_PRESSURE_OVERSAMPLING=5    # 0=skip, 1-5=x1/x2/x4/x8/x16
+BME280_HUMIDITY_OVERSAMPLING=1    # 0=skip, 1-5=x1/x2/x4/x8/x16
+BME280_FILTER_COEFFICIENT=4       # 0=off, 1-4=coeff 2/4/8/16
+
+# ─────────────────────────────────────────────────────────
+# SECTION 5: TURBINE SPECIFICATIONS
+# ─────────────────────────────────────────────────────────
+# Physical parameters for Cp and λ calculations
+
+TURBINE_TYPE=VAWT                 # VAWT / HAWT
+ROTOR_RADIUS=0.60                 # meters (center to blade tip)
+ROTOR_HEIGHT=1.50                 # meters (for VAWT, blade height)
+BLADE_COUNT=3                     # Number of blades
+SWEPT_AREA=1.80                   # m² (for VAWT: 2 * R * H; for HAWT: π * R²)
+
+# For HAWT, specify hub height
+HUB_HEIGHT=3.0                    # meters (for HAWT only)
+
+# Performance specifications
+TURBINE_RATED_POWER=500           # Watts (nominal rated power)
+TURBINE_CUT_IN_WIND=2.5           # m/s (minimum operational wind speed)
+TURBINE_RATED_WIND=10.0           # m/s (rated wind speed)
+TURBINE_CUT_OUT_WIND=20.0         # m/s (shut-down wind speed)
+TURBINE_MAX_RPM=500               # RPM (maximum safe operating speed)
+
+# Generator specifications
+GENERATOR_TYPE=PMG                # PMG (permanent magnet) / IG (induction) / OTHER
+GENERATOR_PHASES=3                # 1 or 3
+GENERATOR_POLES=12                # Number of poles
+
+# ─────────────────────────────────────────────────────────
+# SECTION 6: SITE INFORMATION
+# ─────────────────────────────────────────────────────────
+
+SITE_NAME=Moratuwa Coastal Test Site
+SITE_DESCRIPTION=University research facility, coastal environment
+SITE_LATITUDE=6.7906              # Decimal degrees (North positive)
+SITE_LONGITUDE=79.9000            # Decimal degrees (East positive)
+SITE_ELEVATION=5.0                # meters above sea level
+SITE_TIMEZONE_OFFSET=5.5          # Hours from UTC (Sri Lanka = UTC+5:30)
+
+# Environmental classification
+SITE_TERRAIN=COASTAL              # COASTAL / URBAN / RURAL / OPEN / FOREST
+SITE_ROUGHNESS_CLASS=2            # IEC roughness class (0-4)
+SITE_OBSTACLES_PRESENT=1          # 1=yes (buildings, trees), 0=no
+
+# ─────────────────────────────────────────────────────────
+# SECTION 7: DATA ACQUISITION PARAMETERS
+# ─────────────────────────────────────────────────────────
+
+SAMPLING_RATE_HZ=1.0              # Samples per second (1 Hz = once per second)
+DATA_BUFFER_SIZE=10               # Number of samples to buffer before SD write
+SD_WRITE_BATCH_SIZE=10            # Write to SD card every N samples
+
+# Sensor reading frequencies (can differ from main sampling rate)
+ANEMOMETER_READ_HZ=1.0            # Wind speed reading frequency
+ROTOR_READ_HZ=10.0                # RPM calculation update frequency (higher for accuracy)
+POWER_READ_HZ=1.0                 # Power reading frequency
+BME280_READ_HZ=0.1                # Environmental (once per 10 seconds)
+
+# ADC settings for analog sensors
+ADC_RESOLUTION=12                 # Bits (ESP32 default: 12-bit = 0-4095)
+ADC_ATTENUATION=11                # dB (0/2.5/6/11 → 0-1V/0-1.5V/0-2.2V/0-3.3V)
+ADC_SAMPLES_TO_AVERAGE=10         # Number of ADC readings to average per measurement
+
+# ─────────────────────────────────────────────────────────
+# SECTION 8: DATA STORAGE (SD CARD)
+# ─────────────────────────────────────────────────────────
+
+SD_CARD_ENABLE=1                  # 1=enabled, 0=disabled (dangerous!)
+SD_CARD_CS_PIN=5                  # ESP32 GPIO chip-select pin
+SD_CARD_MOSI_PIN=23               # MOSI pin
+SD_CARD_MISO_PIN=19               # MISO pin
+SD_CARD_SCK_PIN=18                # Clock pin
+SD_CARD_FORMAT=CSV                # CSV / JSON / BINARY
+
+# File naming and rotation
+SD_FILE_PREFIX=turbine_data       # Filename prefix
+SD_FILE_EXTENSION=.csv            # File extension
+SD_NEW_FILE_INTERVAL=DAILY        # HOURLY / DAILY / WEEKLY / SIZE
+SD_MAX_FILE_SIZE_MB=100           # Start new file if exceeded (if SIZE mode)
+
+# CSV column headers (customize as needed)
+SD_CSV_HEADER=timestamp,wind_speed_ms,rotor_rpm,voltage_V,current_A,power_W,temperature_C,pressure_hPa,humidity_pct,cp,lambda
+
+# Data integrity
+SD_ENABLE_CRC=0                   # 1=append CRC checksum to each line, 0=disabled
+SD_SYNC_INTERVAL_SEC=60           # Force SD card sync every N seconds (prevents data loss)
+
+# ─────────────────────────────────────────────────────────
+# SECTION 9: NETWORK CONFIGURATION
+# ─────────────────────────────────────────────────────────
+
+WIFI_ENABLE=1                     # 1=enabled, 0=disabled
+WIFI_SSID=YourNetworkName         # Wi-Fi network name
+WIFI_PASSWORD=YourPassword        # Wi-Fi password (WPA2)
+WIFI_TIMEOUT_SEC=30               # Connection timeout
+WIFI_RETRY_INTERVAL_SEC=300       # Retry every 5 minutes if fails
+WIFI_MAX_RETRIES=3                # Give up after N failed attempts (0=infinite)
+
+# Static IP (optional, leave blank for DHCP)
+WIFI_STATIC_IP=                   # e.g., 192.168.1.100 (blank = DHCP)
+WIFI_GATEWAY=                     # e.g., 192.168.1.1
+WIFI_SUBNET=255.255.255.0         # Subnet mask
+WIFI_DNS_PRIMARY=8.8.8.8          # DNS server (Google DNS)
+WIFI_DNS_SECONDARY=8.8.4.4        # Secondary DNS
+
+# Power saving
+WIFI_POWER_SAVE_MODE=0            # 1=enable modem sleep, 0=always on (better reliability)
+
+# ─────────────────────────────────────────────────────────
+# SECTION 10: MQTT CLOUD TRANSMISSION
+# ─────────────────────────────────────────────────────────
+
+MQTT_ENABLE=1                     # 1=enabled, 0=disabled
+MQTT_BROKER=broker.hivemq.com     # MQTT broker address (or IP)
+MQTT_PORT=1883                    # Port (1883 standard, 8883 for TLS)
+MQTT_USE_TLS=0                    # 1=use TLS encryption, 0=plain
+MQTT_USERNAME=                    # Leave blank if no authentication
+MQTT_PASSWORD=                    # Leave blank if no authentication
+
+MQTT_CLIENT_ID=ESP32-Turbine-UoM-Site01  # Unique client ID
+MQTT_TOPIC_BASE=turbine/uom/site01       # Base topic
+MQTT_TOPIC_DATA=turbine/uom/site01/data  # Topic to publish data
+MQTT_TOPIC_STATUS=turbine/uom/site01/status  # Topic for status messages
+MQTT_TOPIC_ERRORS=turbine/uom/site01/errors  # Topic for error messages
+
+MQTT_QOS=1                        # Quality of Service (0=at most once, 1=at least once, 2=exactly once)
+MQTT_RETAIN=0                     # 1=retain last message, 0=don't retain
+
+MQTT_PUBLISH_INTERVAL_SEC=60      # Transmit every N seconds
+MQTT_BATCH_SAMPLES=60             # Send summary of N samples (or individual samples if 1)
+
+# Message format
+MQTT_FORMAT=JSON                  # JSON / CSV
+MQTT_INCLUDE_TIMESTAMP=1          # 1=include timestamp in message, 0=exclude
+MQTT_INCLUDE_CALCULATED_VALUES=1  # 1=include Cp and lambda, 0=raw data only
+
+# Connection behavior
+MQTT_AUTO_RECONNECT=1             # 1=auto-reconnect if disconnected, 0=manual
+MQTT_KEEP_ALIVE_SEC=60            # Keep-alive interval
+MQTT_CLEAN_SESSION=1              # 1=clean session on connect, 0=persistent
+
+# ─────────────────────────────────────────────────────────
+# SECTION 11: NTP TIME SYNCHRONIZATION
+# ─────────────────────────────────────────────────────────
+
+NTP_ENABLE=1                      # 1=enabled, 0=disabled (use RTC only)
+NTP_SERVER_PRIMARY=pool.ntp.org   # NTP server address
+NTP_SERVER_SECONDARY=time.nist.gov # Backup NTP server
+NTP_SYNC_INTERVAL_SEC=3600        # Re-sync every hour
+NTP_TIMEZONE_OFFSET_SEC=19800     # Seconds from UTC (5.5 hours = 19800 sec)
+
+# Daylight saving time (DST)
+NTP_DST_ENABLE=0                  # 1=enabled, 0=disabled (Sri Lanka has no DST)
+NTP_DST_OFFSET_SEC=3600           # DST offset in seconds (typically 1 hour)
+
+# Time format
+NTP_TIME_FORMAT=ISO8601           # ISO8601 / UNIX / CUSTOM
+NTP_CUSTOM_FORMAT=%Y-%m-%d %H:%M:%S  # If CUSTOM (strftime format)
+
+# ─────────────────────────────────────────────────────────
+# SECTION 12: REAL-TIME CLOCK (DS3231 optional)
+# ─────────────────────────────────────────────────────────
+
+RTC_ENABLE=0                      # 1=enabled, 0=disabled
+RTC_I2C_ADDRESS=0x68              # I2C address for DS3231
+RTC_BATTERY_BACKUP=1              # 1=has battery, 0=no battery
+
+# RTC behavior
+RTC_SYNC_TO_NTP=1                 # 1=update RTC from NTP, 0=RTC is master
+RTC_UPDATE_INTERVAL_SEC=86400     # Update RTC from NTP daily
+
+# ─────────────────────────────────────────────────────────
+# SECTION 13: DATA QUALITY AND VALIDATION
+# ─────────────────────────────────────────────────────────
+
+# Flag data as invalid if outside these ranges
+WIND_SPEED_MIN=0.0                # m/s (physically impossible below this)
+WIND_SPEED_MAX=30.0               # m/s (sensor/turbine max)
+ROTOR_RPM_MIN=0.0                 # RPM
+ROTOR_RPM_MAX=500.0               # RPM (safety limit)
+POWER_MIN=-10.0                   # Watts (allow small negative for noise)
+POWER_MAX=1000.0                  # Watts (above rated power indicates error)
+TEMPERATURE_MIN=-10.0             # °C
+TEMPERATURE_MAX=60.0              # °C
+VOLTAGE_MIN=0.0                   # Volts
+VOLTAGE_MAX=60.0                  # Volts
+CURRENT_MIN=-1.0                  # Amperes (allow small negative)
+CURRENT_MAX=25.0                  # Amperes
+
+# Outlier detection (3-sigma rule)
+OUTLIER_DETECTION_ENABLE=1        # 1=enabled, 0=disabled
+OUTLIER_SIGMA_THRESHOLD=3.0       # Flag if > N standard deviations from mean
+OUTLIER_WINDOW_SIZE=20            # Number of samples for rolling statistics
+
+# Rate of change limits (detect sensor failures)
+WIND_SPEED_MAX_CHANGE_PER_SEC=2.0 # m/s (flag if exceeds)
+POWER_MAX_CHANGE_PER_SEC=100.0    # Watts
+
+# Data completeness
+MIN_DATA_COMPLETENESS_PCT=95.0    # Flag dataset if < this % valid samples
+
+# ─────────────────────────────────────────────────────────
+# SECTION 14: CALCULATED VALUES
+# ─────────────────────────────────────────────────────────
+
+# Air density calculation
+AIR_DENSITY_METHOD=CALCULATED     # CALCULATED / FIXED
+AIR_DENSITY_FIXED=1.225           # kg/m³ (if FIXED method)
+
+# For CALCULATED method, uses BME280 data:
+# ρ = P / (R_specific × T)
+# where R_specific = 287.05 J/(kg·K) for dry air
+AIR_GAS_CONSTANT=287.05           # J/(kg·K)
+AIR_HUMIDITY_CORRECTION=1         # 1=apply humidity correction, 0=ignore
+
+# Coefficient of performance (Cp) calculation
+CP_CALCULATION_ENABLE=1           # 1=enabled, 0=disabled
+CP_AVERAGING_WINDOW_SEC=10        # Average over N seconds
+
+# Tip speed ratio (λ) calculation
+LAMBDA_CALCULATION_ENABLE=1       # 1=enabled, 0=disabled
+
+# Power coefficient limits (for validation)
+CP_MAX=0.59                       # Betz limit (theoretical maximum)
+CP_EXPECTED_MAX=0.35              # Realistic maximum for your turbine
+LAMBDA_MIN=0.0                    # Minimum valid TSR
+LAMBDA_MAX=15.0                   # Maximum valid TSR
+
+# ─────────────────────────────────────────────────────────
+# SECTION 15: SYSTEM BEHAVIOR
+# ─────────────────────────────────────────────────────────
+
+# Watchdog timer
+WATCHDOG_ENABLE=1                 # 1=enabled (auto-reboot on hang), 0=disabled
+WATCHDOG_TIMEOUT_SEC=30           # Reboot if no activity for N seconds
+
+# LED status indicators
+LED_STATUS_ENABLE=1               # 1=use LED for status indication, 0=disabled
+LED_STATUS_PIN=2                  # ESP32 GPIO pin for status LED (built-in LED)
+LED_BLINK_PATTERN=NORMAL          # NORMAL / ERROR / WARNING / OFF
+
+# LED patterns (milliseconds on/off):
+LED_PATTERN_NORMAL_ON=100         # Blink: 100ms on
+LED_PATTERN_NORMAL_OFF=900        # Blink: 900ms off (slow blink = OK)
+LED_PATTERN_ERROR_ON=200          # Blink: 200ms on
+LED_PATTERN_ERROR_OFF=200         # Blink: 200ms off (fast blink = error)
+
+# Serial debug output
+SERIAL_DEBUG_ENABLE=1             # 1=print debug messages to serial, 0=quiet
+SERIAL_BAUD_RATE=115200           # Baud rate for serial communication
+SERIAL_LOG_LEVEL=INFO             # DEBUG / INFO / WARNING / ERROR
+
+# Low power mode (for battery operation)
+LOW_POWER_MODE_ENABLE=0           # 1=sleep between samples, 0=always on
+LOW_POWER_WAKE_INTERVAL_SEC=60    # Wake up every N seconds if low-power mode
+LOW_POWER_WIFI_DISABLE=0          # 1=disable WiFi in low power mode, 0=keep enabled
+
+# Boot behavior
+AUTO_START_LOGGING=1              # 1=start logging on boot, 0=wait for command
+CALIBRATION_CHECK_ON_BOOT=1       # 1=verify calibration dates, 0=skip
+SENSOR_TEST_ON_BOOT=1             # 1=test all sensors on boot, 0=skip
+
+# Error handling
+ERROR_LOGGING_ENABLE=1            # 1=log errors to separate file, 0=disabled
+ERROR_LOG_FILE=errors.log         # Error log filename
+MAX_CONSECUTIVE_ERRORS=10         # Reboot if exceeds (0=never reboot)
+
+# ─────────────────────────────────────────────────────────
+# SECTION 16: ADVANCED FEATURES
+# ─────────────────────────────────────────────────────────
+
+# Web interface (if implemented in firmware)
+WEB_SERVER_ENABLE=0               # 1=enabled, 0=disabled
+WEB_SERVER_PORT=80                # HTTP port
+WEB_AUTH_ENABLE=0                 # 1=require password, 0=open
+WEB_USERNAME=admin                # Username (if auth enabled)
+WEB_PASSWORD=changeme             # Password (if auth enabled)
+
+# OTA (Over-The-Air) firmware updates
+OTA_ENABLE=0                      # 1=enabled, 0=disabled
+OTA_PASSWORD=otapassword          # Password for OTA updates
+OTA_PORT=3232                     # OTA port
+
+# Data export
+AUTO_EXPORT_ENABLE=0              # 1=auto-upload data files, 0=manual
+EXPORT_PROTOCOL=FTP               # FTP / SFTP / HTTP
+EXPORT_SERVER=ftp.example.com     # Server address
+EXPORT_USERNAME=ftpuser           # Upload username
+EXPORT_PASSWORD=ftppass           # Upload password
+EXPORT_INTERVAL_HOURS=24          # Export every N hours
+
+# Alerts and notifications
+ALERT_ENABLE=0                    # 1=enabled, 0=disabled
+ALERT_EMAIL=admin@example.com     # Email for alerts
+ALERT_CONDITIONS=OVERSPEED,OVERPOWER  # Comma-separated list
+
+# Maintenance reminders
+MAINTENANCE_REMINDER_ENABLE=1     # 1=enabled, 0=disabled
+MAINTENANCE_INTERVAL_DAYS=90      # Remind every N days
+NEXT_MAINTENANCE_DATE=2025-08-15  # Next scheduled maintenance
+
+# ─────────────────────────────────────────────────────────
+# SECTION 17: FIRMWARE METADATA (do not modify)
+# ─────────────────────────────────────────────────────────
+
+FIRMWARE_VERSION=1.2.0
+FIRMWARE_BUILD_DATE=2025-05-01
+CONFIG_VERSION=1.0
+CONFIG_CREATED=2025-05-01
+CONFIG_LAST_MODIFIED=2025-05-15
+CONFIG_AUTHOR=Your Name
+
+# ─────────────────────────────────────────────────────────
+# SECTION 18: CUSTOM USER PARAMETERS
+# ─────────────────────────────────────────────────────────
+# Add your own custom parameters here
+
+# Example custom parameters:
+# CUSTOM_PARAM_1=value1
+# CUSTOM_PARAM_2=value2
+
+# ============================================================
+# END OF CONFIGURATION FILE
+# ============================================================
+# For detailed explanations of each parameter, see:
+# - Main guide Section 4.5 (calibration)
+# - Main guide Appendix C (sensor calibration)
+# - GitHub: hardware/calibration/README.md
+# ============================================================
+
+# USAGE INSTRUCTIONS:
+# 1. Copy this file to SD card root directory as "config.txt"
+# 2. Customize sections 1-6 with your calibration and site data
+# 3. Adjust section 7-9 for your data acquisition needs
+# 4. Leave sections 14-17 as default unless you need advanced features
+# 5. Test configuration by loading SD card and checking Serial Monitor
+# 6. If errors occur, check docs/troubleshooting/common_errors.md
+
+# PARAMETER PRIORITY:
+# - CRITICAL (must customize): Sections 1, 5, 6, 9
+# - IMPORTANT (should review): Sections 2, 3, 4, 7, 8
+# - OPTIONAL (defaults OK): Sections 10-18
+
+# VALIDATION CHECKLIST:
+# [ ] Calibration dates are current (Section 1, 3)
+# [ ] Site coordinates are correct (Section 6)
+# [ ] WiFi credentials are correct (Section 9)
+# [ ] Sensor pins match hardware wiring (Sections 1-4)
+# [ ] Turbine specifications match your system (Section 5)
+# [ ] File naming is appropriate (Section 8)
+
+# For support: https://github.com/asithakal/wind-turbine-daq-guide/issues
