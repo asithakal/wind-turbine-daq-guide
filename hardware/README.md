@@ -40,6 +40,27 @@ Links to component datasheets and comparison tables.
 - `datasheet_links.md`: Curated links to manufacturer datasheets
 - `component_comparison.xlsx`: Alternative sensor options with trade-offs
 
+### **`calibration/`** ⭐ *NEW - Advanced Research Resources*
+Research-grade calibration procedures, uncertainty analysis tools, and automation scripts.
+
+| Subfolder | Contents | Target Users |
+|-----------|----------|--------------|
+| **`procedures/`** | Extended protocols: GUM uncertainty, multi-point calibration, field validation | Master's/Doctoral researchers |
+| **`templates/`** | Calibration certificates, advanced datasheets, complete config.txt | All users needing formal documentation |
+| **`tools/`** | Python scripts: GUM calculator, curve fitting, drift analysis | Users comfortable with Python |
+| **`examples/`** | Worked examples, sample datasets | Learning reference |
+
+**Quick access:**
+- 📖 **Start here:** [`calibration/README.md`](calibration/README.md) - Navigation and differentiation guide
+- 🧮 **Uncertainty calculator:** [`calibration/tools/uncertainty-calculator.py`](calibration/tools/uncertainty-calculator.py)
+- 📊 **Complete config template:** [`calibration/templates/config-template-complete.txt`](calibration/templates/config-template-complete.txt)
+
+**Differentiation:**
+- **Need quick calibration?** → Use [`../docs/calibration/`](../docs/calibration/) practical guides
+- **Need formal uncertainty?** → Use [`calibration/`](calibration/) advanced resources
+
+**Reference:** Book Appendix C for calibration theory and methodology
+
 ---
 
 ## 🔧 Quick Start
@@ -65,7 +86,37 @@ Download [`bom_sri_lanka.csv`](bom/bom_sri_lanka.csv) or [`bom_international.csv
 
 **Tip:** Test each sensor individually before full system integration (see `firmware/examples/`)
 
-### **3. Enclosure Assembly**
+### **3. Calibrate Sensors** ⭐ *UPDATED*
+
+**Choose your calibration approach:**
+
+#### **Option A: Quick Calibration (Recommended for Most Users)**
+- **Time:** 1-2 days
+- **Accuracy:** ±5%
+- **Guides:** [`../docs/calibration/`](../docs/calibration/)
+- **Best for:** Undergraduate projects, learning, prototyping
+
+**Steps:**
+1. Read [`../docs/calibration/anemometer_calibration.md`](../docs/calibration/anemometer_calibration.md)
+2. Read [`../docs/calibration/power_sensor_calibration.md`](../docs/calibration/power_sensor_calibration.md)
+3. Apply corrections in firmware
+4. Done!
+
+#### **Option B: Research-Grade Calibration (For Publication)**
+- **Time:** 3-7 days
+- **Accuracy:** ±1-3% with formal uncertainty
+- **Guides:** [`calibration/`](calibration/)
+- **Best for:** Master's/doctoral research, peer-reviewed publications
+
+**Steps:**
+1. Quick calibration using [`../docs/calibration/`](../docs/calibration/) guides
+2. Run GUM uncertainty analysis: [`calibration/tools/uncertainty-calculator.py`](calibration/tools/uncertainty-calculator.py)
+3. Generate formal certificate: [`calibration/templates/calibration-certificate.docx`](calibration/templates/calibration-certificate.docx)
+4. Document uncertainty budget in thesis/paper
+
+**Timeline:** See [`calibration/README.md`](calibration/README.md) for detailed workflow
+
+### **4. Enclosure Assembly**
 
 1. Print [`mounting_template.pdf`](enclosure/mounting_template.pdf)
 2. Drill holes for cable glands and ventilation
@@ -142,14 +193,16 @@ If specific sensors are unavailable, see [`datasheets/component_comparison.xlsx`
 ## 📖 Related Documentation
 
 - **Firmware Setup:** [`../firmware/README.md`](../firmware/README.md)
-- **Calibration Procedures:** [`../docs/calibration/`](../docs/calibration/)
+- **Quick Calibration:** [`../docs/calibration/`](../docs/calibration/) ← *Start here for practical guides*
+- **Advanced Calibration:** [`calibration/`](calibration/) ← *For research-grade uncertainty analysis*
+- **Data Analysis Scripts:** [`../analysis/`](../analysis/)
 - **Troubleshooting:** [`../docs/troubleshooting/hardware_debugging.md`](../docs/troubleshooting/hardware_debugging.md)
 
 ---
 
 ## 🤝 Contributing
 
-Found a better component source? Have a custom PCB design? 
+Found a better component source? Have a custom PCB design? Improved calibration procedures?
 
 Submit improvements via [Pull Request](https://github.com/asithakal/wind-turbine-daq-guide/pulls) or [Issue](https://github.com/asithakal/wind-turbine-daq-guide/issues).
 
