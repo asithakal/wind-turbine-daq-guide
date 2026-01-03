@@ -2,7 +2,7 @@
 ## A Practical Resource for Student Researchers
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.XXXXXXX.svg)](https://doi.org/10.5281/zenodo.XXXXXXX)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.18093662.svg)](https://doi.org/10.5281/zenodo.18093662)
 
 This repository accompanies the technical guide **"Wind Turbine Data Acquisition Systems: From Requirements Engineering to FAIR Data Publication"** by Dr. Asitha Kulasekera (University of Moratuwa).
 
